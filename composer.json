@@ -1,7 +1,7 @@
 {
-  "name": "berkayk/onesignal-laravel",
+  "name": "jonlod/onesignal-laravel",
   "description": "OneSignal Push Wrapper Laravel",
-  "keywords": ["onesignal", "webpush", "push", "laravel", "laravel 5"],
+  "keywords": ["onesignal", "push", "laravel", "laravel 5"],
   "type": "library",
   "require": {
     "php": ">=5.4.0",
@@ -14,7 +14,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Berkayk\\OneSignal\\": "src/"
+      "jonlod\\OneSignal\\": "src/"
     }
   },
   "license": "MIT",
@@ -27,8 +27,23 @@
     {
       "name": "Maykonn Welington Candido",
       "email": "maykonn@outlook.com"
+    },
+    {
+      "name": "Jonas Lodewyckx",
+      "email": "jonaslodewyckx@gmail.com",
+      "homepage": "http://jonlod.com"
     }
   ],
   "minimum-stability": "dev",
-  "prefer-stable": true 
+  "prefer-stable": true,
+  "extra": {
+    "laravel": {
+      "providers": [
+        "jonlod\\laravel-onesignal\\src\\OneSignalServiceProvider"
+      ],
+      "aliases": {
+        "OneSignal": "jonlod\\laravel-onesignal\\src\\OneSignalFacade"
+      }
+    }
+  }
 }

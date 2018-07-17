@@ -1,23 +1,17 @@
 <?php
 
 return array(
-    /*
-	|--------------------------------------------------------------------------
-	| One Signal App Id
-	|--------------------------------------------------------------------------
-	|
-	|
-	*/
-    'app_id' => 'YOUR-APP-ID-HERE',
 
-    /*
-	|--------------------------------------------------------------------------
-	| Rest API Key
-	|--------------------------------------------------------------------------
-	|
-    |
-	|
-	*/
-    'rest_api_key' => 'YOUR-REST-API-KEY-HERE',
-    'user_auth_key' => 'YOUR-USER-AUTH-KEY'
+
+
+
+    'app_id' => env('ONESIGNAL_APP_ID','null'),
+
+    'rest_api_key' => env('ONESIGNAL_REST_API_KEY','null'),
+
+    'email_toggle' => env('ONESIGNAL_EMAIL_TOGGLE', false),
+
+    'tomorrow_hour' => 10, // Hour used on next day. Time is converted to server time (not onesignal server time)
+
+    'user_auth_key' => 'YOUR-USER-AUTH-KEY'// I don't use this
 );

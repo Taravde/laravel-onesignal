@@ -2,26 +2,27 @@
 
 ## Introduction
 
-This is a simple OneSignal wrapper library for Laravel. It simplifies the basic notification flow with the defined methods. You can send a message to all users or you can notify a single user. 
-Before you start installing this service, please complete your OneSignal setup at https://onesignal.com and finish all the steps that is necessary to obtain an application id and REST API Keys.
-
+This is a rehash from the original Berkayk package. 
 
 ## Installation
 
 First, you'll need to require the package with Composer:
 
 ```sh
-composer require berkayk/onesignal-laravel
+composer require jonlod/onesignal-laravel
 ```
 
-Aftwards, run `composer update` from your command line.
 
-Then, update `config/app.php` by adding an entry for the service provider.
+Auto discovery is on. if you use Laravel 5.4 or lower => 
+
+<---------- <=5.4 
+
+ update `config/app.php` by adding an entry for the service provider.
 
 ```php
 'providers' => [
 	// ...
-	Berkayk\OneSignal\OneSignalServiceProvider::class
+	jonlod\OneSignal\OneSignalServiceProvider::class
 ];
 ```
 
@@ -31,77 +32,72 @@ Then, register class alias by adding an entry in aliases section
 ```php
 'aliases' => [
 	// ...
-	'OneSignal' => Berkayk\OneSignal\OneSignalFacade::class
+	'OneSignal' => jonlod\OneSignal\OneSignalFacade::class
 ];
 ```
-
+---------> <=5.4 
 
 Finally, from the command line again, run 
 
 ```
-php artisan vendor:publish --tag=config
+php artisan vendor:publish --provider=jonlod/OneSignal/OneSignalServiceProvider --tag=config
 ``` 
 
 to publish the default configuration file. 
-This will publish a configuration file named `onesignal.php` which includes your OneSignal authorization keys.
+This will publish a configuration file named `onesignal.php`.
 
-> **Note:** If the previous command does not publish the config file successfully, please check the steps involving *providers* and *aliases* in the `config/app.php` file.
 
 
 ## Configuration
 
-You need to fill in `onesignal.php` file that is found in your applications `config` directory.
-`app_id` is your *OneSignal App ID* and `rest_api_key` is your *REST API Key*.
+ Keys should be set in the .env
+
+```php
+
+ONESIGNAL_APP_ID=<*****>
+ONESIGNAL_REST_API_KEY=<*******>
+ONESIGNAL_EMAIL_TOGGLE= //true or false
+```
+
+The email toggle is required if you use hashed emails. Otherwise the tag user_id is used. 
+
+Tomorrow hour can be changed in the onesignal.php config file. This is only used for delayed push notifications on the next day.
 
 ## Usage
 
+Include the trait anywhere. 
+
+```php
+use PushNotifications;
+```
+
 ### Sending a Notification To All Users
 
-You can easily send a message to all registered users with the command
+```php
+$this->pushToAll(...);
+```
 
-    OneSignal::sendNotificationToAll("Some Message", $url = null, $data = null, $buttons = null, $schedule = null);
-    
-`$url` , `$data` , `$buttons` and `$schedule` fields are exceptional. If you provide a `$url` parameter, users will be redirecting to that url.
-    
+### Sending a Notification To All Users Tomorrow
+
+```php
+$this->pushToAllTomorrow(...);
+```
 
 ### Sending a Notification based on Tags/Filters
 
-You can send a message based on a set of tags with the command
 
-#####Example 1:
-    OneSignal::sendNotificationUsingTags("Some Message", array(["field" => "email", "relation" => "=", "value" => "someone@example.com"]), $url = null, $data = null, $buttons = null, $schedule = null);
-#####Example 2:
-    OneSignal::sendNotificationUsingTags("Some Message", array(["field" => "session_count", "relation" => ">", "value" => '2']), $url = null, $data = null, $buttons = null, $schedule = null);
+```php
+$this->pushToAllTag(...);
+```
 
 ### Sending a Notification To A Specific User
 
-After storing a user's tokens in a table, you can simply send a message with
 
-    OneSignal::sendNotificationToUser("Some Message", $userId, $url = null, $data = null, $buttons = null, $schedule = null);
-    
-`$userId` is the user's unique id where he/she is registered for notifications. Read https://documentation.onesignal.com/docs/web-push-tagging-guide for additional details.
-`$url` , `$data` , `$buttons` and `$schedule` fields are exceptional. If you provide a `$url` parameter, users will be redirecting to that url.
+```php
+$this->pushToUser(...);
+```
 
 
-### Sending a Notification To Segment
+### Async
 
-You can simply send a notification to a specific segment with
-
-    OneSignal::sendNotificationToSegment("Some Message", $segment, $url = null, $data = null, $buttons = null, $schedule = null);
-    
-`$url` , `$data` , `$buttons` and `$schedule` fields are exceptional. If you provide a `$url` parameter, users will be redirecting to that url.
-
-### Sending a Custom Notification
-
-You can send a custom message with 
-
-    OneSignal::sendNotificationCustom($parameters);
-    
-    ### Sending a Custom Notification
-### Sending a async Custom Notification
-You can send a async custom message with 
-
-    OneSignal::async()->sendNotificationCustom($parameters);
-    
-Please refer to https://documentation.onesignal.com/reference for all customizable parameters.
-
+All pushes use the job: SendPushes. This is automatically queued if a queue is available.
