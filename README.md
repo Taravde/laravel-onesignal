@@ -9,7 +9,7 @@ This is a rehash from the original Berkayk package.
 First, you'll need to require the package with Composer:
 
 ```sh
-composer require jonlod/onesignal-laravel
+composer require jonlod/onesignal-laravel:v1.0-beta.1
 ```
 
 
@@ -40,7 +40,7 @@ Then, register class alias by adding an entry in aliases section
 Finally, from the command line again, run 
 
 ```
-php artisan vendor:publish --provider=jonlod/OneSignal/OneSignalServiceProvider --tag=config
+php artisan vendor:publish --tag=config
 ``` 
 
 to publish the default configuration file. 
