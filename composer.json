@@ -39,10 +39,10 @@
   "extra": {
     "laravel": {
       "providers": [
-        "jonlod\\laravel-onesignal\\src\\OneSignalServiceProvider"
+        "jonlod\\OneSignal\\OneSignalServiceProvider"
       ],
       "aliases": {
-        "OneSignal": "jonlod\\laravel-onesignal\\src\\OneSignalFacade"
+        "OneSignal": "jonlod\\OneSignal\\OneSignalFacade"
       }
     }
   }
