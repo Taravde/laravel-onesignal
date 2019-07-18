@@ -133,6 +133,23 @@ trait PushNotifications
 
     // HELPERS
 
+
+    public function transAll($string, $replace_data = []){
+        $result = [];
+
+        foreach (config('languages.options') as $lang){
+            if($replace_data!= [] && is_array($replace_data[0]))
+                $result[strtolower($lang)] = trans($string, $replace_data[$lang], strtolower($lang));
+            else
+                $result[strtolower($lang)] = trans($string, $replace_data, strtolower($lang));
+        }
+
+        if(!key_exists('en', $result))
+            $result['en'] = $result[0];
+
+        return $result;
+    }
+
     private function paramBuilder($message, $heading = null, $additional_data = null)
     {
         $params = [];

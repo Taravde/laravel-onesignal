@@ -88,6 +88,17 @@ $this->pushToAllScheduled(...);
 
 ```
 
+##Helpers
+
+### Trans all
+```php
+$this->transAll(...);
+```
+In the config 'languages.options' needs to  be set. This will automatically translate to all available languages with possible translations in the replacements too.
+
+Best to use this when there is translatable content, onesignal will choose the correct language on the device. 
+
+English is always required
 
 ### Async
 
