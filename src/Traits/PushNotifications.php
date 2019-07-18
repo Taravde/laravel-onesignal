@@ -1,5 +1,6 @@
 <?php
 namespace jonlod\OneSignal\traits;
+
 use jonlod\OneSignal\jobs\SendPushes;
 use App\Models\User;
 use Carbon\Carbon;
@@ -11,84 +12,138 @@ use OneSignal;
  * Date: 01/02/2017
  * Time: 14:38
  */
-
-
-
-trait PushNotifications{
+trait PushNotifications
+{
 
     /**
-     * @param $message
+     * @param string|array $message
      * @param User $user
+     * @param null|string|array $heading
+     * @param null|array $additional_data
      */
-    public function pushToUser($message, User $user,  $heading = null ,$additional_data = null){
-        if(env('APP_ENV') != 'local'){
-
-            $params = $this->paramBuilder($message,$heading, $additional_data);
-
-            if(config('onesignal.email_toggle'))
-                $params["filters"] = [$this->insertUserByMail($user)];
-            else
-                $params["tags"] = [$this->insertUserById($user)];
+    public function pushToUser($message, User $user, $heading = null, $additional_data = null)
+    {
+        if (env('APP_ENV') != 'local') {
+            $params = $this->paramBuilder($message, $heading, $additional_data);
+            $params["tags"] = [$user->id];
 
             SendPushes::dispatch($params);
         }
     }
 
-    /**
-     * @param $message
-     */
-    public function pushToAll($message){
-        OneSignal::sendNotificationToAll($message);
-    }
-
-
-    public function pushToAllTag($message, $tag, $value, $heading = null, $additional_data = null){
-
-        $params = $this->paramBuilder($message, $heading, $additional_data);
-
-        $params["tags"]  = [
-            ['key' => $tag, 'relation' => '=', 'value' => $value],
-        ];
-
-        OneSignal::sendNotificationCustom($params);
-    }
-    /**
-     * @param $message
-     */
-    public function pushToAllTomorrow($message){
-        OneSignal::sendNotificationToAll($message,null,null,null,Carbon::tomorrow()->addHours(config('onesignal.tomorrow_hour'))->toDateTimeString());
-    }
 
     /**
-     * @param $message
+     * @param string|array $message
      * @param User[] $users
+     * @param null|string|array $heading
+     * @param null|array $additional_data
      */
-    public function pushToUsers($message, $users, $heading = null,$additional_data = null){
-        if(env('APP_ENV') != 'local'){
-
+    public function pushToUsers($message, $users, $heading = null, $additional_data = null)
+    {
+        if (env('APP_ENV') != 'local') {
             $params = $this->paramBuilder($message, $heading, $additional_data);
 
-            if(config('onesignal.email_toggle'))
-                $this->pushToUsersByMail($users, $params);
-            else
-                $this->pushToUsersById($users, $params);
+            $params["include_external_user_ids"] = $users->pluck('id');
+            SendPushes::dispatch($params);
+        }
 
+    }
+
+    /**
+     * @param Carbon $time
+     * @param string|array $message
+     * @param User[] $users
+     * @param null|string|array $heading
+     * @param null|array $additional_data
+     */
+    public function pushToUsersScheduled(Carbon $time, $message, $users, $heading = null, $additional_data = null)
+    {
+        if (env('APP_ENV') != 'local') {
+            $params = $this->paramBuilder($message, $heading, $additional_data);
+
+            $params["include_external_user_ids"] = $users->pluck('id');
+            $params['send_after'] = $time->setTimezone('UTC')->toDateTimeString();
+
+            SendPushes::dispatch($params);
+        }
+
+    }
+
+    /**
+     * @param string|array $message
+     * @param null|string|array $heading
+     */
+    public function pushToAll($message, $heading = null)
+    {
+        if (env('APP_ENV') != 'local') {
+            $params = $this->paramBuilder($message, $heading);
+            $params['included_segments'] = ['All'];
+            SendPushes::dispatch($params);
         }
     }
 
+    /**
+     * @param string|array $message
+     * @param string $tag
+     * @param string $value
+     * @param null|string|array $heading
+     * @param null|array $additional_data
+     */
+    public function pushToAllTag($message, $tag, $value, $heading = null, $additional_data = null)
+    {
+        if (env('APP_ENV') != 'local') {
+            $params = $this->paramBuilder($message, $heading, $additional_data);
+            $params["tags"] = [
+                ['key' => $tag, 'relation' => '=', 'value' => $value],
+            ];
+            SendPushes::dispatch($params);
+        }
+    }
+
+    /**
+     * @param string|array $message
+     * @param null|string|array $heading
+     */
+    public function pushToAllTomorrow($message, $heading = null)
+    {
+        if (env('APP_ENV') != 'local') {
+            $params = $this->paramBuilder($message, $heading);
+            $params['included_segments'] = ['All'];
+            $params['send_after'] = Carbon::tomorrow()->addHours(config('onesignal.tomorrow_hour'))->setTimezone('UTC')->toDateTimeString();
+            SendPushes::dispatch($params);
+        }
+
+    }
+
+    /**
+     * @param Carbon $time
+     * @param string|array $message
+     * @param null|string|array $heading
+     */
+    public function pushToAllScheduled(Carbon $time, $message, $heading = null)
+    {
+        if (env('APP_ENV') != 'local') {
+            $params = $this->paramBuilder($message, $heading);
+            $params['included_segments'] = ['All'];
+            $params['send_after'] = $time->setTimezone('UTC')->toDateTimeString();
+            SendPushes::dispatch($params);
+        }
+    }
+
+
     // HELPERS
 
-
-    private function paramBuilder($message, $heading = null, $additional_data = null){
+    private function paramBuilder($message, $heading = null, $additional_data = null)
+    {
         $params = [];
-        if(is_array($message))
+        if (is_array($message))
             $params["contents"] = $message;
         else
             $params["contents"] = ["en" => $message];
-        if(!$heading)
+        if (!$heading)
             $params["headings"] = ["en" => trans('main.app')];
-        else{
-            if(is_array($heading))
+        else {
+            if (is_array($heading))
                 $params["headings"] = $heading;
             else
                 $params["headings"] = ["en" => $heading];
@@ -101,102 +156,5 @@ trait PushNotifications{
         return $params;
     }
 
-    /**
-     * @param $message
-     * @param User[] $users
-     */
-    private function pushToUsersById($users, &$params){
-        $tags = 0;
-
-        $params["tags"] = [];
-        $last = $users->last();
-        foreach ($users as $key=>$user){
-            array_push($params["tags"], $this->insertUserById($user));
-//            if($param){
-//                array_push($params["tags"],$this->insertAnd());
-//                array_push($params["tags"], $this->insertAdditionalParam($param,'true'));
-//            }
-            $tags += 3;
-            if($tags >= 180){
-                SendPushes::dispatch($params);
-                //OneSignal::sendNotificationCustom($params);
-                $params["tags"] = [];
-                $tags = 0;
-            }else{
-                if($last != $user){
-                    array_push($params["tags"], $this->insertOr());
-                    $tags++;
-                }
-            }
-        }
-        if($params["tags"] != []){
-            SendPushes::dispatch($params);
-            //OneSignal::sendNotificationCustom($params);
-        }
-    }
-
-    /**
-     * @param $message
-     * @param User[] $users
-     */
-    private function pushToUsersByMail($users, &$params){
-
-        $filters = 0;
-        $params["filters"] = [];
-        $params["tags"] = [];
-
-        $last = $users->last();
-        foreach ($users as $key=>$user){
-            array_push($params["filters"], $this->insertUserByMail($user));
-            $filters++;
-            if($filters >= 180){
-                OneSignal::sendNotificationCustom($params);
-                $params["filters"] = [];
-                $filters = 0;
-            }else{
-                if($last != $user){
-                    array_push($params["filters"], $this->insertOr());
-                    $filters++;
-                }
-            }
-        }
-        if($params["filters"] != [])
-            OneSignal::sendNotificationCustom($params);
-    }
-
-
-    //HELP FUNCTIONS
-    /**
-     * @return array
-     */
-    private function insertOr(){
-        return ["operator"=> 'OR'];
-    }
-
-    private function insertAnd(){
-        return ["operator"=> 'AND'];
-    }
-    /**
-     * @param User $user
-     * @return array
-     */
-    private function insertUserById(User $user){
-        return ["key" => 'user_id', 'relation' => '=', 'value' => $user->id];
-    }
-
-    /**
-     * @param User $user
-     * @return array
-     */
-    private function insertUserByMail(User $user){
-        return ["field" => 'email', 'value' => $user->email];
-    }
-
-    private function insertAdditionalParam($param, $val){
-        return ["key" => $param, 'relation' => '=', 'value' => $val];
-    }
-    private function insertAdditionalParamFilter($param, $val){
-        return ["field" => 'tag', 'key' => $param, 'relation' => '=', 'value' => $val];
-    }
 
 }

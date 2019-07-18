@@ -9,13 +9,13 @@ This is a rehash from the original Berkayk package.
 First, you'll need to require the package with Composer:
 
 ```sh
-composer require jonlod/onesignal-laravel:v1.0-beta.1
+composer require jonlod/onesignal-laravel
 ```
 
 
 Auto discovery is on. if you use Laravel 5.4 or lower => 
 
-<---------- <=5.4 
+----- <=5.4 
 
  update `config/app.php` by adding an entry for the service provider.
 
@@ -35,7 +35,7 @@ Then, register class alias by adding an entry in aliases section
 	'OneSignal' => jonlod\OneSignal\OneSignalFacade::class
 ];
 ```
----------> <=5.4 
+------- <=5.4 
 
 Finally, from the command line again, run 
 
@@ -56,12 +56,16 @@ This will publish a configuration file named `onesignal.php`.
 
 ONESIGNAL_APP_ID=<*****>
 ONESIGNAL_REST_API_KEY=<*******>
-ONESIGNAL_EMAIL_TOGGLE= //true or false
 ```
 
-The email toggle is required if you use hashed emails. Otherwise the tag user_id is used. 
 
 Tomorrow hour can be changed in the onesignal.php config file. This is only used for delayed push notifications on the next day.
+
+### App prep
+Apps should fill in the external id parameter with the user id. 
+
+### Models
+App\Models\User is used as default path for the user model
 
 ## Usage
 
@@ -71,30 +75,17 @@ Include the trait anywhere.
 use PushNotifications;
 ```
 
-### Sending a Notification To All Users
+
+### Sending a Notifications 
 
 ```php
 $this->pushToAll(...);
-```
-
-### Sending a Notification To All Users Tomorrow
-
-```php
-$this->pushToAllTomorrow(...);
-```
-
-### Sending a Notification based on Tags/Filters
-
-
-```php
 $this->pushToAllTag(...);
-```
-
-### Sending a Notification To A Specific User
-
-
-```php
 $this->pushToUser(...);
+$this->pushToUsers(...);
+$this->pushToAllTomorrow(...);
+$this->pushToAllScheduled(...);
+
 ```
 
 
