@@ -67,6 +67,11 @@ Apps should fill in the external id parameter with the user id.
 ### Models
 App\Models\User is used as default path for the user model
 
+
+### Async
+
+All pushes use the job: SendPushes. This is automatically queued if a queue is available.
+
 ## Usage
 
 Include the trait anywhere. 
@@ -88,7 +93,7 @@ $this->pushToAllScheduled(...);
 
 ```
 
-##Helpers
+## Helpers
 
 ### Trans all
 ```php
@@ -100,6 +105,3 @@ Best to use this when there is translatable content, onesignal will choose the c
 
 English is always required
 
-### Async
-
-All pushes use the job: SendPushes. This is automatically queued if a queue is available.

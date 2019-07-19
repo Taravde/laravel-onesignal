@@ -138,7 +138,7 @@ trait PushNotifications
         $result = [];
 
         foreach (config('languages.options') as $lang){
-            if($replace_data!= [] && is_array($replace_data[0]))
+            if(count($replace_data) > 0 && is_array($replace_data[0]))
                 $result[strtolower($lang)] = trans($string, $replace_data[$lang], strtolower($lang));
             else
                 $result[strtolower($lang)] = trans($string, $replace_data, strtolower($lang));
