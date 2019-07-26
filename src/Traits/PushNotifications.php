@@ -43,7 +43,7 @@ trait PushNotifications
         if (env('APP_ENV') != 'local') {
             $params = $this->paramBuilder($message, $heading, $additional_data);
 
-            $params["include_external_user_ids"] = $users->pluck('id');
+            $params["include_external_user_ids"] = collect($users)->pluck('id');
             SendPushes::dispatch($params);
         }
 
@@ -61,7 +61,7 @@ trait PushNotifications
         if (env('APP_ENV') != 'local') {
             $params = $this->paramBuilder($message, $heading, $additional_data);
 
-            $params["include_external_user_ids"] = $users->pluck('id');
+            $params["include_external_user_ids"] = collect($users)->pluck('id');
             $params['send_after'] = $time->setTimezone('UTC')->toDateTimeString();
 
             SendPushes::dispatch($params);
