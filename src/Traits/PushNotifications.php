@@ -25,7 +25,7 @@ trait PushNotifications
     {
         if (env('APP_ENV') != 'local') {
             $params = $this->paramBuilder($message, $heading, $additional_data);
-            $params["tags"] = [$user->id];
+            $params["include_external_user_ids"] = [$user->id];
 
             SendPushes::dispatch($params);
         }
