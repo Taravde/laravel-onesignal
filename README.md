@@ -76,20 +76,18 @@ All pushes use the job: SendPushes. This is automatically queued if a queue is a
 
 Include the trait anywhere. 
 
-```php
-use PushNotifications;
-```
+
 
 
 ### Sending a Notifications 
 
 ```php
-$this->pushToAll(...);
-$this->pushToAllTag(...);
-$this->pushToUser(...);
-$this->pushToUsers(...);
-$this->pushToAllTomorrow(...);
-$this->pushToAllScheduled(...);
+Push::pushToAll(...);
+Push::pushToAllTag(...);
+Push::pushToUser(...);
+Push::pushToUsers(...);
+Push::pushToAllTomorrow(...);
+Push::pushToAllScheduled(...);
 
 ```
 
@@ -97,7 +95,7 @@ $this->pushToAllScheduled(...);
 
 ### Trans all
 ```php
-$this->transAll(...);
+Push::transAll(...);
 ```
 In the config 'languages.options' needs to  be set. This will automatically translate to all available languages with possible translations in the replacements too.
 

@@ -4,13 +4,11 @@
   "keywords": ["onesignal", "push", "laravel", "laravel 5"],
   "type": "library",
   "require": {
-    "php": ">=5.4.0",
-    "guzzlehttp/guzzle": "^6.2",
-    "illuminate/support": "4.*|5.*",
-    "symfony/psr-http-message-bridge": "1.*"
-  },
-  "require-dev": {
-    "vlucas/phpdotenv": "^2.2"
+    "php": "^7.2.5",
+    "guzzlehttp/guzzle": "^6.3",
+    "symfony/psr-http-message-bridge": "1.*",
+    "laravel/framework": "^7.0",
+    "ext-http": "*"
   },
   "autoload": {
     "psr-4": {
@@ -31,7 +29,7 @@
     {
       "name": "Jonas Lodewyckx",
       "email": "jonaslodewyckx@gmail.com",
-      "homepage": "http://jonlod.com"
+      "homepage": "http://jonlod.be"
     }
   ],
   "minimum-stability": "dev",
