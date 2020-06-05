@@ -6,7 +6,7 @@
   "require": {
     "php": "^7.2.5",
     "guzzlehttp/guzzle": "^6.3",
-    "symfony/psr-http-message-bridge": "1.*",
+    "symfony/psr-http-message-bridge": "2.*",
     "laravel/framework": "^7.0"
   },
   "autoload": {
