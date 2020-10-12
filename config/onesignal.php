@@ -11,4 +11,6 @@ return array(
 
     'tomorrow_hour' => 10, // Hour used on next day. Time is converted to server time (not onesignal server time)
 
+    "user_auth_key" => null// required for package
+
 );
