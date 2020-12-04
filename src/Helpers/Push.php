@@ -50,6 +50,24 @@ trait Push{
     }
 
     /**
+     * @param  string|array       $message
+     * @param  array              $ids
+     * @param  null|string|array  $heading
+     * @param  null|array         $additional_data
+     */
+    public static function pushToExternalIds($message, array $ids, $heading = null, $additional_data = null){
+        if(env('APP_ENV') != 'local')
+        {
+            $params = Push::paramBuilder($message, $heading, $additional_data);
+
+            $params["include_external_user_ids"] = $ids;
+            SendPushes::dispatch($params);
+        }
+
+    }
+
+
+    /**
      * @param  Carbon             $time
      * @param  string|array       $message
      * @param  User[]             $users
