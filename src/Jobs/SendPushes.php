@@ -1,6 +1,6 @@
 <?php
 
-namespace jonlod\OneSignal\jobs;
+namespace jonlod\OneSignal\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
