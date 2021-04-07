@@ -13,7 +13,7 @@ use OneSignal;
  * Date: 01/02/2017
  * Time: 14:38
  */
-trait Push{
+class Push{
 
     /**
      * @param  string|array       $message
