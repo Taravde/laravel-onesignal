@@ -2,7 +2,7 @@
 
 namespace jonlod\OneSignal\Helpers;
 
-use jonlod\OneSignal\jobs\SendPushes;
+use jonlod\OneSignal\Jobs\SendPushes;
 use App\Models\User;
 use Carbon\Carbon;
 use OneSignal;
