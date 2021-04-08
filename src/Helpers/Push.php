@@ -25,7 +25,7 @@ class Push{
         if(env('APP_ENV') != 'local')
         {
             $params = Push::paramBuilder($message, $heading, $additional_data);
-            $params["include_external_user_ids"] = [$user->id];
+            $params["include_external_user_ids"] = [strval($user->id)];
 
             SendPushes::dispatch($params);
         }
@@ -43,7 +43,7 @@ class Push{
         {
             $params = Push::paramBuilder($message, $heading, $additional_data);
 
-            $params["include_external_user_ids"] = collect($users)->pluck('id');
+            $params["include_external_user_ids"] = collect($users)->pluck('id')->map(function($item) { return strval($item);});
             SendPushes::dispatch($params);
         }
 
@@ -60,7 +60,7 @@ class Push{
         {
             $params = Push::paramBuilder($message, $heading, $additional_data);
 
-            $params["include_external_user_ids"] = $ids;
+            $params["include_external_user_ids"] = collect($ids)->map(function($item) { return strval($item);});
             SendPushes::dispatch($params);
         }
 
@@ -83,7 +83,7 @@ class Push{
         {
             $params = Push::paramBuilder($message, $heading, $additional_data);
 
-            $params["include_external_user_ids"] = collect($users)->pluck('id');
+            $params["include_external_user_ids"] = collect($users)->pluck('id')->map(function($item) { return strval($item);});
             $params['send_after'] = $time->setTimezone('UTC')->toDateTimeString();
 
             SendPushes::dispatch($params);
