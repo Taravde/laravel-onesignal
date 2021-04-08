@@ -2,7 +2,7 @@
 
 namespace jonlod\OneSignal\Helpers;
 
-use jonlod\OneSignal\jobs\SendPushes;
+use jonlod\OneSignal\Jobs\SendPushes;
 use App\Models\User;
 use Carbon\Carbon;
 use OneSignal;
@@ -25,7 +25,7 @@ trait Push{
         if(env('APP_ENV') != 'local')
         {
             $params = Push::paramBuilder($message, $heading, $additional_data);
-            $params["include_external_user_ids"] = [$user->id];
+            $params["include_external_user_ids"] = [strval($user->id)];
 
             SendPushes::dispatch($params);
         }
@@ -43,7 +43,7 @@ trait Push{
         {
             $params = Push::paramBuilder($message, $heading, $additional_data);
 
-            $params["include_external_user_ids"] = collect($users)->pluck('id');
+            $params["include_external_user_ids"] = collect($users)->pluck('id')->map(function($item) { return strval($item);});
             SendPushes::dispatch($params);
         }
 
@@ -65,7 +65,7 @@ trait Push{
         {
             $params = Push::paramBuilder($message, $heading, $additional_data);
 
-            $params["include_external_user_ids"] = collect($users)->pluck('id');
+            $params["include_external_user_ids"] = collect($users)->pluck('id')->map(function($item) { return strval($item);});
             $params['send_after'] = $time->setTimezone('UTC')->toDateTimeString();
 
             SendPushes::dispatch($params);
